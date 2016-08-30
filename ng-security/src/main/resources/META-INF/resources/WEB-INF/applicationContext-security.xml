@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<beans:bean id="sessionRefreshFilter"
+			 class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+
+		<beans:property name="transactionManager" ref="transactionManager" />
+		<beans:property name="transactionAttributes">
+			<beans:props>
+				<beans:prop key="refreshSession">PROPAGATION_REQUIRED</beans:prop>
+			</beans:props>
+		</beans:property>
+		<beans:property name="target">
+			<beans:bean class="cc.waa.ng.security.web.SessionRefreshFilter">
+				<beans:property name="sessionDao" ref="sessionDao" />
+				<beans:property name="activitySessionDao" ref="activitySessionDao" />
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="ngSessionRegistry"
+			 class="cc.waa.ng.security.SessionRegistryImpl">
+
+		<beans:property name="loginRecordDao" ref="loginRecordDao" />
+		<beans:property name="activitySessionDao" ref="activitySessionDao" />
+	</beans:bean>
+
+	<beans:bean id="sessionRegistry"
+			 class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+
+		<beans:property name="transactionManager" ref="transactionManager" />
+		<beans:property name="transactionAttributes">
+			<beans:props>
+				<beans:prop key="getAllSessions">PROPAGATION_REQUIRED</beans:prop>
+			</beans:props>
+		</beans:property>
+		<beans:property name="target" ref="ngSessionRegistry" />
+	</beans:bean>
+
+	<beans:bean id="userDetailsService"
+			 class="cc.waa.ng.security.NgUserDetailsService">
+
+		<beans:property name="identityDao" ref="localAccountIdentityDao" />
+	</beans:bean>
+
+	<beans:bean id="passwordEncoder"
+			 class="cc.waa.ng.util.spring.RsaDecryptWrapper">
+
+		<beans:property name="target">
+			<beans:bean class="cc.waa.ng.security.NgPasswordEncoder">
+				<beans:property name="userDao" ref="userDao" />
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
+
+	<security:http>
+		<security:intercept-url pattern="/dashboard.html" access="hasRole('ADMIN')" />
+		<security:form-login login-page="/security/login" default-target-url="/dashboard.html" always-use-default-target="true" login-processing-url="/security/login" />
+		<security:remember-me />
+		<security:logout logout-success-url="/welcome.html" logout-url="/security/logout" />
+		<security:anonymous />
+		<security:custom-filter ref="sessionRefreshFilter" before="CONCURRENT_SESSION_FILTER" />
+		<security:session-management>
+			<security:concurrency-control max-sessions="1" session-registry-ref="sessionRegistry" />
+		</security:session-management>
+	</security:http>
+
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="userDetailsService">
+			<security:password-encoder ref="passwordEncoder" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+	<beans:bean class="cc.waa.ng.security.SessionDestroyedListener">
+		<beans:property name="sessionRegistry" ref="ngSessionRegistry" />
+		<beans:property name="activitySessionDao" ref="activitySessionDao" />
+	</beans:bean>
+
+</beans:beans>

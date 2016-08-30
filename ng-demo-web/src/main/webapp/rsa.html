@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JavaScript RSA</title>
+<script type="text/javascript" src="http://www.ohdave.com/rsa/BigInt.js"></script>
+<script type="text/javascript" src="http://www.ohdave.com/rsa/Barrett.js"></script>
+<script type="text/javascript" src="http://www.ohdave.com/rsa/RSA.js"></script>
+<script type="text/javascript">
+
+window.onload = function()
+{
+	// 公钥加密明文
+	setMaxDigits(130);
+	//var publicKey = "25065286b2627846f19411522364326d";
+	var publicKey = "b91adb420f73c640e3de1acdecb8d32aca8ead7b9ddd8802f7b40e7dfbd40f8231751c0309495816a5bedc3fb03e0ae8d3da6956927eb14e1ef37a9c56ad3ba9e89b0b6126fb9667ebbe61c9aa9b11d1bbed274f35dd7573e0571e885f4a688f50bf85e6deea5caf61fb8c608a8abf1f9894b2a38cc82b1b488fcdc0c21bb32d";
+	var key1 = new RSAKeyPair("10001", "", publicKey);
+	var password = "123456";
+	var encryPssword = encryptedString(key1, password);
+
+	document.write("完成加密处理：");
+	document.write(encryPssword);
+
+	// 私钥解密
+	//var privateKey = "d3c495c2580d606089f1cbab136f071";
+	//var key2 = new RSAKeyPair("10001", privateKey, publicKey);
+	//var decryptedPssword = decryptedString(key2, encryPssword);
+
+	//alert(decryptedPssword);
+}
+
+</script>
+</head>
+
+<body></body>
+</html>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<beans:bean id="dataSource"
+			 class="org.springframework.jndi.JndiObjectFactoryBean">
+
+		<beans:property name="jndiName" value="java:comp/env/jdbc/ng-demo" />
+	</beans:bean>
+
+	<beans:bean id="jdbcTemplate"
+			 class="org.springframework.jdbc.core.JdbcTemplate">
+
+		<beans:property name="dataSource" ref="dataSource" />
+	</beans:bean>
+
+	<beans:bean class="cc.waa.ng.util.spring.PropertyPlaceholderJdbcConfigurer">
+
+		<beans:property name="jdbcTemplate" ref="jdbcTemplate" />
+	</beans:bean>
+
+	<!--
+	   - 基于eclipselink的EntityManagerFactory配置
+	  -->
+	<beans:bean id="entityManagerFactory"
+			 class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+
+		<beans:property name="dataSource" ref="dataSource" />
+		<beans:property name="mappingResources">
+			<beans:array>
+				<beans:value>META-INF/ng-base-entity-orm.xml</beans:value>
+				<beans:value>META-INF/ng-weixin-entity-orm.xml</beans:value>
+			</beans:array>
+		</beans:property>
+		<beans:property name="jpaVendorAdapter">
+			<beans:bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter" />
+		</beans:property>
+		<beans:property name="loadTimeWeaver">
+			<beans:bean class="${jpa.loadtimeweaver.class}" />
+		</beans:property>
+		<beans:property name="jpaProperties">
+			<beans:props>
+				<beans:prop key="eclipselink.logging.level.sql">FINE</beans:prop>
+				<beans:prop key="eclipselink.cache.shared.default">false</beans:prop>
+				<beans:prop key="ng.id.user.system">${ng.id.user.system}</beans:prop>
+			</beans:props>
+		</beans:property>
+	</beans:bean>
+
+	<!--
+	   - 基于hibernate的EntityManagerFactory配置
+	<beans:bean id="entityManagerFactory"
+			 class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+
+		<beans:property name="dataSource" ref="dataSource" />
+		<beans:property name="mappingResources">
+			<beans:array>
+				<beans:value>META-INF/ng-base-entity-orm.xml</beans:value>
+				<beans:value>META-INF/ng-weixin-entity-orm.xml</beans:value>
+			</beans:array>
+		</beans:property>
+		<beans:property name="jpaVendorAdapter">
+			<beans:bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</beans:property>
+		<beans:property name="jpaProperties">
+			<beans:props>
+				<beans:prop key="ng.id.user.system">${ng.id.user.system}</beans:prop>
+			</beans:props>
+		</beans:property>
+	</beans:bean>
+	  -->
+
+	<beans:bean id="transactionManager"
+			 class="org.springframework.orm.jpa.JpaTransactionManager">
+
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+	</beans:bean>
+
+	<!-- 事务通知 -->
+	<tx:advice id="txAdviceDao" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save"   propagation="REQUIRED" rollback-for="Exception" />
+			<tx:method name="update" propagation="REQUIRED" rollback-for="Exception" />
+			<tx:method name="delete" propagation="REQUIRED" rollback-for="Exception" />
+
+			<tx:method name="find*"   propagation="NOT_SUPPORTED" read-only="true" />
+			<tx:method name="count*"  propagation="NOT_SUPPORTED" read-only="true" />
+			<tx:method name="search*" propagation="NOT_SUPPORTED" read-only="true" />
+
+			<tx:method name="*" propagation="NOT_SUPPORTED" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:pointcut id="cutNgBaseDao" expression="execution(* cc.waa.ng.base.data.dao..*Dao.*(..))" />
+		<aop:pointcut id="cutNgWeixinDao" expression="execution(* cc.waa.ng.weixin.dao..*Dao.*(..))" />
+
+		<aop:advisor advice-ref="txAdviceDao" pointcut-ref="cutNgBaseDao" />
+		<aop:advisor advice-ref="txAdviceDao" pointcut-ref="cutNgWeixinDao" />
+	</aop:config>
+
+	<beans:bean class="cc.waa.ng.util.spring.ApplicationUtils" />
+	<beans:bean class="cc.waa.ng.util.jpa.JpaUtils">
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+	</beans:bean>
+
+	<!--
+	   - 批量注册dao对象到spring的上下文
+	  -->
+	<beans:bean class="cc.waa.ng.data.dao.DataRepositoryRegister" init-method="init">
+
+		<beans:property name="scanPackages">
+			<beans:list>
+				<beans:value>cc.waa.ng.base.data.dao</beans:value>
+				<beans:value>cc.waa.ng.weixin.dao</beans:value>
+			</beans:list>
+		</beans:property>
+		<beans:property name="invocations">
+			<beans:list>
+				<beans:bean class="cc.waa.ng.data.dao.CriteriaQueryInvocation" />
+				<beans:bean class="cc.waa.ng.data.dao.JPQLQueryInvocation" />
+				<beans:bean class="cc.waa.ng.data.dao.analyze.AnalyzeQueryInvocation" />
+				<beans:bean class="cc.waa.ng.data.dao.buildin.BuildInQueryInvocation" />
+				<beans:bean class="cc.waa.ng.data.dao.BaseQueryInvocation" />
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="pageForward"
+			 class="cc.waa.ng.util.mvc.PageForwardController" />
+
+	<beans:bean class="cc.waa.ng.base.data.entity.listener.UserDeletedDisableAccount" />
+
+	<!-- 处理实体类快照记录 -->
+	<beans:bean class="cc.waa.ng.data.entity.snapshot.BuildEntitySnapshot">
+		<beans:property name="translaters">
+			<beans:list>
+				<beans:bean class="cc.waa.ng.data.entity.snapshot.field.SkipFieldTranslater">
+					<beans:property name="skipFields">
+						<beans:list>
+							<beans:value>serialVersionUID</beans:value>
+							<beans:value>owner</beans:value>
+						</beans:list>
+					</beans:property>
+				</beans:bean>
+				<beans:bean class="cc.waa.ng.data.entity.snapshot.field.NestedFieldTranslater" />
+				<beans:bean class="cc.waa.ng.data.entity.snapshot.field.SimpleFieldTranslater" />
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean class="cc.waa.ng.base.data.entity.listener.UpdateUserLoginRecord" />
+
+	<beans:import resource="applicationContext-security.xml" />
+	<beans:import resource="applicationContext-weixin.xml" />
+
+</beans:beans>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xmlns="http://maven.apache.org/POM/4.0.0"
+
+	xsi:schemaLocation="
+		http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>cc.waa.ng</groupId>
+		<artifactId>ng-platform</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>ng-base-data</artifactId>
+
+	<name>${project.artifactId}</name>
+	<url>http://ng.waa.cn</url>
+
+	<dependencies>
+
+		<!-- 日志框架 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- ORM部分 -->
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>javax.persistence</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- 模块引用部分 -->
+		<dependency>
+			<groupId>cc.waa.ng</groupId>
+			<artifactId>ng-data</artifactId>
+			<version>${version.platform}</version>
+		</dependency>
+	</dependencies>
+
+</project>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-fragment
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+
+	xsi:schemaLocation="
+		http://xmlns.jcp.org/xml/ns/javaee
+		http://xmlns.jcp.org/xml/ns/javaee/web-fragment_3_1.xsd"
+
+	version="3.1">
+
+	<display-name>waa新一代框架的安全模块</display-name>
+
+	<listener>
+		<listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>cc.waa.ng.security.web.listener.SessionIdChanged</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>security</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>security</servlet-name>
+		<url-pattern>/security/login</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/welcome.html</url-pattern>
+		<url-pattern>/dashboard.html</url-pattern>
+		<url-pattern>/security/login</url-pattern>
+		<url-pattern>/security/logout</url-pattern>
+	</filter-mapping>
+
+</web-fragment>

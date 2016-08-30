@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PUBLIC>
+<!--
+   - 针对tomcat的配置，解决开发过程中经常undeploy造成重新配置的麻烦
+  -->
+<Context>
+	<ResourceLink global="jdbc/ng-demo" name="jdbc/ng-demo" type="javax.sql.DataSource" />
+	<Loader loaderClass="org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader" />
+</Context>

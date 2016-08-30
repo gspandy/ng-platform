@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xmlns="http://maven.apache.org/POM/4.0.0"
+
+	xsi:schemaLocation="
+		http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>cc.waa.ng</groupId>
+		<artifactId>ng-platform</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>ng-demo-web</artifactId>
+	<packaging>war</packaging>
+
+	<name>${project.artifactId}</name>
+	<url>http://ng.waa.cc</url>
+
+	<build>
+		<finalName>/</finalName>
+	</build>
+
+	<dependencies>
+
+		<!-- 日志框架 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+
+		<!-- ORM部分 -->
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+		</dependency>
+
+		<!-- WEB部分 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>
+
+		<!-- 模块引用部分 -->
+		<dependency>
+			<groupId>cc.waa.ng</groupId>
+			<artifactId>ng-security</artifactId>
+			<version>${version.platform}</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.waa.ng</groupId>
+			<artifactId>ng-weixin</artifactId>
+			<version>${version.platform}</version>
+		</dependency>
+
+		<!-- 运行时所需的模块 -->
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>

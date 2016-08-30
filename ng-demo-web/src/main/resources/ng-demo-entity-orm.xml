@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="2.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+
+	xsi:schemaLocation="
+		http://xmlns.jcp.org/xml/ns/persistence/orm
+		http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd">
+
+	<entity class="cc.waa.ng.demo.entity.TestEntity">
+		<table name="NG_TBL_TEST" />
+
+		<attributes>
+			<id name="id">
+				<column name="PK_ID" />
+			</id>
+			<basic name="message">
+				<column name="C_MESSAGE" />
+			</basic>
+			<basic name="createTime">
+				<column name="C_CREATE_TIME" updatable="false" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+		</attributes>
+	</entity>
+
+</entity-mappings>

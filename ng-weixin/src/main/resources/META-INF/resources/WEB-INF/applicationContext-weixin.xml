@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<beans:bean id="weixinVerifyToken" class="java.lang.String">
+		<beans:constructor-arg value="${weixin.verify.token}" />
+	</beans:bean>
+
+	<!--
+	<beans:bean id="tokenStore"
+			 class="cc.waa.ng.weixin.AccessTokenFileStore">
+
+		<beans:property name="tokenFile" value="${weixin.token.store.file_path}" />
+	</beans:bean>
+	  -->
+
+	<beans:bean id="tokenStore"
+			 class="cc.waa.ng.weixin.AccessTokenContextStore">
+
+		<beans:property name="storeKey" value="${weixin.token.store.context_key}" />
+	</beans:bean>
+
+	<beans:bean id="weixinClient"
+			 class="cc.waa.ng.weixin.service.impl.DefaultWeixinClient">
+
+		<beans:property name="appApiPrefix" value="${weixin.api.url}" />
+		<beans:property name="tokenStore" ref="tokenStore" />
+	</beans:bean>
+
+	<beans:bean id="autoRefreshAccessToken"
+			 class="cc.waa.ng.weixin.service.impl.AutoRefreshAccessToken">
+
+		<beans:property name="appApiPrefix" value="${weixin.api.url}" />
+		<beans:property name="appId" value="${weixin.appid}" />
+		<beans:property name="appSecret" value="${weixin.appsecret}" />
+		<beans:property name="tokenStore" ref="tokenStore" />
+	</beans:bean>
+
+	<beans:bean id="weixinClientProxied"
+			 class="org.springframework.aop.framework.ProxyFactoryBean">
+
+		<beans:property name="proxyInterfaces" value="cc.waa.ng.weixin.WeixinClient" />
+
+		<beans:property name="interceptorNames">
+			<beans:list>
+				<beans:value>autoRefreshAccessToken</beans:value>
+				<beans:value>weixinClient</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="weixinMessageService"
+			 class="cc.waa.ng.weixin.service.impl.WeixinMessageServiceImpl">
+
+		<beans:property name="weixinMessageDao" ref="weixinMessageDao" />
+	</beans:bean>
+
+	<util:map id="weixinMessageHandlerMap" />
+	<util:map id="weixinEventHandlerMap" />
+
+	<beans:bean id="weixinTaskExecutor"
+			 class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+
+		<beans:property name="corePoolSize" value="3" />
+		<beans:property name="maxPoolSize"  value="9" />
+		<beans:property name="waitForTasksToCompleteOnShutdown" value="true" />
+	</beans:bean>
+
+</beans:beans>

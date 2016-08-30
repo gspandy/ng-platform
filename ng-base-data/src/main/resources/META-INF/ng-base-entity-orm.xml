@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="2.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+
+	xsi:schemaLocation="
+		http://xmlns.jcp.org/xml/ns/persistence/orm
+		http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd">
+
+	<entity class="cc.waa.ng.base.data.entity.snapshot.RoleSnapshot">
+		<table name="NG_SST_ROLE" />
+		<attributes>
+			<basic name="name">
+				<column name="C_NAME" />
+			</basic>
+			<basic name="code">
+				<column name="C_CODE" />
+			</basic>
+			<basic name="profileType">
+				<column name="C_PROFILE_TYPE" updatable="false" />
+				<convert converter="cc.waa.ng.data.entity.ClassAttributeConverter" />
+			</basic>
+			<basic name="description">
+				<column name="C_DESCRIPTION" />
+			</basic>
+			<many-to-one name="owner">
+				<join-column name="FK_OWNER_ID" updatable="false" nullable="false" />
+			</many-to-one>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.snapshot.UserSnapshot">
+		<table name="NG_SST_USER" />
+		<attributes>
+			<basic name="passHasher">
+				<column name="C_PASS_HASHER" />
+			</basic>
+			<basic name="passHash">
+				<column name="C_PASS_HASH" />
+			</basic>
+			<basic name="locked">
+				<column name="IS_LOCKED" />
+			</basic>
+			<basic name="loginCount">
+				<column name="C_LOGIN_COUNT" />
+			</basic>
+			<basic name="expired">
+				<column name="IS_EXPIRED" />
+			</basic>
+			<basic name="firstLoginTime">
+				<column name="C_FIRST_LOGIN_TIME" />
+			</basic>
+			<basic name="lastLoginTime">
+				<column name="C_LAST_LOGIN_TIME" />
+			</basic>
+			<many-to-one name="owner">
+				<join-column name="FK_OWNER_ID" updatable="false" nullable="false" />
+			</many-to-one>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.data.entity.snapshot.Snapshot">
+		<inheritance strategy="TABLE_PER_CLASS" />
+		<attributes>
+			<id name="id">
+				<column name="PK_ID" />
+			</id>
+			<basic name="startTime">
+				<column name="C_START_TIME" updatable="false" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="endTime">
+				<column name="C_END_TIME" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="tail">
+				<column name="IS_TAIL" />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.auth.StandardLoginRecordEntity">
+		<discriminator-value>1</discriminator-value>
+		<attributes>
+			<basic name="loginAccount">
+				<column name="C_LOGIN_ACCOUNT" />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.auth.ActivitySessionEntity">
+		<table name="NG_TBL_ACTIVITY_SESSION" />
+		<attributes>
+			<id name="id">
+				<column name="PK_ID" />
+			</id>
+			<basic name="createTime">
+				<column name="C_CREATE_TIME" updatable="false" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<many-to-one name="session">
+				<join-column name="FK_SESSION_ID" />
+			</many-to-one>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.auth.SessionEntity">
+		<table name="NG_TBL_SESSION" />
+		<attributes>
+			<id name="id">
+				<column name="PK_ID" />
+			</id>
+			<basic name="status">
+				<column name="C_STATUS" />
+			</basic>
+			<basic name="userAgent">
+				<column name="C_USER_AGENT" />
+			</basic>
+			<basic name="createTime">
+				<column name="C_CREATE_TIME" updatable="false" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="refreshTime">
+				<column name="C_REFRESH_TIME" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="visitTimes">
+				<column name="C_VISIT_TIMES" />
+			</basic>
+			<basic name="loginTimes">
+				<column name="C_LOGIN_TIMES" />
+			</basic>
+			<many-to-one name="loginRecord">
+				<join-column name="FK_LOGIN_RECORD_ID" />
+			</many-to-one>
+			<one-to-many name="activities" mapped-by="session">
+				<order-by>createTime DESC</order-by>
+			</one-to-many>
+			<element-collection name="createIpRoute">
+				<order-column name="PK_INDEX" />
+				<column name="C_CREATE_IP" />
+				<collection-table name="NG_ASS_SESSION_CREATE_IP">
+					<join-column name="PK_SESSION_ID" />
+				</collection-table>
+			</element-collection>
+			<element-collection name="refreshIpRoute">
+				<order-column name="PK_INDEX" />
+				<column name="C_REFRESH_IP" />
+				<collection-table name="NG_ASS_SESSION_REFRESH_IP">
+					<join-column name="PK_SESSION_ID" />
+				</collection-table>
+			</element-collection>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.auth.LoginRecordEntity">
+		<table name="NG_TBL_LOGIN_RECORD" />
+		<discriminator-column discriminator-type="INTEGER" name="D_TYPE" />
+		<attributes>
+			<id name="id">
+				<column name="PK_ID" />
+			</id>
+			<basic name="loginStatus">
+				<column name="C_LOGIN_STATUS" />
+			</basic>
+			<basic name="loginTime">
+				<column name="C_LOGIN_TIME" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="requestTimes">
+				<column name="C_REQUEST_TIMES" />
+			</basic>
+			<basic name="lastRequestTime">
+				<column name="C_LAST_REQUEST_TIME" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="quitTime">
+				<column name="C_QUIT_TIME" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="createTime">
+				<column name="C_CREATE_TIME" updatable="false" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<many-to-one name="user" fetch="LAZY">
+				<join-column name="FK_USER_ID" />
+			</many-to-one>
+			<many-to-one name="session" fetch="LAZY">
+				<join-column name="FK_SESSION_ID" />
+			</many-to-one>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.AdminProfileEntity">
+		<table name="NG_TBL_PROFILE" />
+
+		<discriminator-value>2</discriminator-value>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.EmptyProfileEntity">
+		<table name="NG_TBL_PROFILE" />
+
+		<discriminator-value>1</discriminator-value>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.ProfileEntity">
+		<table name="NG_TBL_PROFILE" />
+
+		<inheritance strategy="JOINED" />
+		<discriminator-column discriminator-type="INTEGER" name="D_TYPE" />
+
+		<attributes>
+			<id name="id">
+				<column name="PK_ID" />
+			</id>
+			<basic name="deleted">
+				<column name="IS_DELETED" />
+			</basic>
+			<basic name="createTime">
+				<column name="C_CREATE_TIME" updatable="false" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="deleteTime">
+				<column name="C_DELETE_TIME" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<many-to-one name="user" fetch="LAZY">
+				<join-column name="FK_USER_ID" updatable="false" />
+			</many-to-one>
+			<many-to-one name="role" fetch="LAZY">
+				<join-column name="FK_ROLE_ID" updatable="false" />
+			</many-to-one>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.RoleEntity">
+		<table name="NG_TBL_ROLE" />
+		<attributes>
+			<id name="id">
+				<column name="PK_ID" />
+			</id>
+			<basic name="name">
+				<column name="C_NAME" />
+			</basic>
+			<basic name="code">
+				<column name="C_CODE" />
+			</basic>
+			<basic name="profileType">
+				<column name="C_PROFILE_TYPE" updatable="false" />
+				<convert converter="cc.waa.ng.data.entity.ClassAttributeConverter" />
+			</basic>
+			<basic name="description">
+				<column name="C_DESCRIPTION" />
+			</basic>
+			<basic name="deleted">
+				<column name="IS_DELETED" />
+			</basic>
+			<basic name="createTime">
+				<column name="C_CREATE_TIME" updatable="false" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="deleteTime">
+				<column name="C_DELETE_TIME" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.UserEntity">
+		<table name="NG_TBL_USER" />
+
+		<attributes>
+			<id name="id">
+				<column name="PK_ID" />
+			</id>
+			<basic name="passHasher">
+				<column name="C_PASS_HASHER" />
+			</basic>
+			<basic name="passHash">
+				<column name="C_PASS_HASH" />
+			</basic>
+			<basic name="deleted">
+				<column name="IS_DELETED" />
+			</basic>
+			<basic name="createTime">
+				<column name="C_CREATE_TIME" updatable="false" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="deleteTime">
+				<column name="C_DELETE_TIME" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="locked">
+				<column name="IS_LOCKED" />
+			</basic>
+			<basic name="expired">
+				<column name="IS_EXPIRED" />
+			</basic>
+			<basic name="loginCount">
+				<column name="RC_LOGIN_COUNT" />
+			</basic>
+			<many-to-one name="firstLogin" fetch="LAZY">
+				<join-column name="RFK_FIRST_LOGIN_RECORD_ID" />
+			</many-to-one>
+			
+			<many-to-one name="lastLogin" fetch="LAZY">
+				<join-column name="RFK_LAST_LOGIN_RECORD_ID" />
+			</many-to-one>
+
+			<one-to-many name="profiles" mapped-by="user" />
+
+			<one-to-many name="identities" mapped-by="user" />
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.IdentityEntity">
+		<table name="NG_TBL_IDENTITY" />
+
+		<inheritance strategy="JOINED" />
+		<discriminator-column discriminator-type="INTEGER" name="D_TYPE" />
+
+		<attributes>
+			<id name="id">
+				<column name="PK_ID" />
+			</id>
+			<basic name="enabled">
+				<column name="IS_ENABLED" />
+			</basic>
+			<basic name="createTime">
+				<column name="C_CREATE_TIME" updatable="false" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<many-to-one name="user" fetch="LAZY">
+				<join-column name="FK_USER_ID" updatable="false" />
+			</many-to-one>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.base.data.entity.LocalAccountIdentityEntity">
+		<table name="NG_TBL_IDENTITY_LA" />
+
+		<discriminator-value>1</discriminator-value>
+
+		<attributes>
+			<basic name="account">
+				<column name="UQ_ACCOUNT" unique="true" />
+			</basic>
+		</attributes>
+	</entity>
+
+	<converter class="cc.waa.ng.data.entity.ClassAttributeConverter" />
+
+</entity-mappings>

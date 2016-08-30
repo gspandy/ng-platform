@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+
+	xsi:schemaLocation="
+		http://xmlns.jcp.org/xml/ns/javaee
+		http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+
+	version="3.1">
+
+	<display-name>NG框架的试验应用</display-name>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<resource-ref>
+		<res-ref-name>jdbc/ng-demo</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<mapped-name>jdbc/ng-demo</mapped-name><!-- 加这个能兼容tomcat和glassfish -->
+	</resource-ref>
+
+	<servlet>
+		<servlet-name>page</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>page</servlet-name>
+		<url-pattern>/welcome.html</url-pattern>
+		<url-pattern>/dashboard.html</url-pattern>
+	</servlet-mapping>
+
+</web-app>

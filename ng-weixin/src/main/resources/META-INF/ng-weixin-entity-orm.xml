@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="2.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+
+	xsi:schemaLocation="
+		http://xmlns.jcp.org/xml/ns/persistence/orm
+		http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd">
+
+	<mapped-superclass class="cc.waa.ng.weixin.entity.WeixinBaseEntity">
+		<attributes>
+			<id name="id">
+				<column name="PK_ID" />
+			</id>
+			<basic name="msgType">
+				<column name="C_MSG_TYPE" />
+			</basic>
+			<basic name="fromUserName">
+				<column name="C_FROM_USER_NAME" />
+			</basic>
+			<basic name="toUserName">
+				<column name="C_TO_USER_NAME" />
+			</basic>
+			<basic name="originTime">
+				<column name="C_ORIGIN_TIME" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="createTime">
+				<column name="C_CREATE_TIME" updatable="false" />
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+		</attributes>
+	</mapped-superclass>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinEventEntity">
+		<table name="NG_TBL_WEIXIN_EVENT" />
+
+		<inheritance strategy="JOINED" />
+		<discriminator-column discriminator-type="INTEGER" name="D_TYPE" />
+
+		<attributes>
+			<basic name="event">
+				<column name="C_EVENT" />
+			</basic>
+			<basic name="eventKey">
+				<column name="C_EVENT_KEY" />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinSubscribeEventEntity">
+		<discriminator-value>1</discriminator-value>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinTicketEventEntity">
+		<table name="NG_TBL_WEIXIN_EVENT_TICKET" />
+
+		<discriminator-value>2</discriminator-value>
+
+		<attributes>
+			<basic name="ticket">
+				<column name="C_TICKET" />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinLocationEventEntity">
+		<table name="NG_TBL_WEIXIN_EVENT_LOCATION" />
+
+		<discriminator-value>3</discriminator-value>
+
+		<attributes>
+			<basic name="latitude">
+				<column name="C_LATITUDE" />
+			</basic>
+			<basic name="longitude">
+				<column name="C_LONGITUDE" />
+			</basic>
+			<basic name="precision">
+				<column name="C_PRECISION" />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinCustomMenuEventEntity">
+		<discriminator-value>4</discriminator-value>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinMessageEntity">
+		<table name="NG_TBL_WEIXIN_MESSAGE" />
+
+		<inheritance strategy="JOINED" />
+		<discriminator-column discriminator-type="INTEGER" name="D_TYPE" />
+
+		<attributes>
+			<basic name="msgId">
+				<column name="C_MSG_ID" />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinTextMessageEntity">
+		<table name="NG_TBL_WEIXIN_MESSAGE_TEXT" />
+
+		<discriminator-value>1</discriminator-value>
+
+		<attributes>
+			<basic name="content">
+				<column name="C_CONTENT" />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinImageMessageEntity">
+		<table name="NG_TBL_WEIXIN_MESSAGE_IMAGE" />
+
+		<discriminator-value>2</discriminator-value>
+
+		<attributes>
+			<basic name="picUrl">
+				<column name="C_PIC_URL" />
+			</basic>
+			<basic name="mediaId">
+				<column name="C_MEDIA_ID" />
+			</basic>
+			<basic name="mediaType">
+				<column name="C_MEDIA_TYPE" />
+			</basic>
+			<basic name="mediaContent" fetch="LAZY">
+				<column name="C_MEDIA_CONTENT" />
+				<lob />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinVoiceMessageEntity">
+		<table name="NG_TBL_WEIXIN_MESSAGE_VOICE" />
+
+		<discriminator-value>3</discriminator-value>
+
+		<attributes>
+			<basic name="mediaId">
+				<column name="C_MEDIA_ID" />
+			</basic>
+			<basic name="mediaType">
+				<column name="C_MEDIA_TYPE" />
+			</basic>
+			<basic name="mediaContent" fetch="LAZY">
+				<column name="C_MEDIA_CONTENT" />
+				<lob />
+			</basic>
+			<basic name="format">
+				<column name="C_FORMAT" />
+			</basic>
+			<basic name="recognition">
+				<column name="C_RECOGNITION" />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinVideoMessageEntity">
+		<table name="NG_TBL_WEIXIN_MESSAGE_VIDEO" />
+
+		<discriminator-value>4</discriminator-value>
+
+		<attributes>
+			<basic name="mediaId">
+				<column name="C_MEDIA_ID" />
+			</basic>
+			<basic name="mediaType">
+				<column name="C_MEDIA_TYPE" />
+			</basic>
+			<basic name="mediaContent" fetch="LAZY">
+				<column name="C_MEDIA_CONTENT" />
+				<lob />
+			</basic>
+			<basic name="thumbMediaId">
+				<column name="C_THUMB_MEDIA_ID" />
+			</basic>
+			<basic name="thumbMediaType">
+				<column name="C_THUMB_MEDIA_TYPE" />
+			</basic>
+			<basic name="thumbMediaContent" fetch="LAZY">
+				<column name="C_THUMB_MEDIA_CONTENT" />
+				<lob />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinShortVideoMessageEntity">
+		<table name="NG_TBL_WEIXIN_MESSAGE_VIDEO" />
+
+		<discriminator-value>5</discriminator-value>
+
+		<attributes>
+			<basic name="mediaId">
+				<column name="C_MEDIA_ID" />
+			</basic>
+			<basic name="mediaType">
+				<column name="C_MEDIA_TYPE" />
+			</basic>
+			<basic name="mediaContent" fetch="LAZY">
+				<column name="C_MEDIA_CONTENT" />
+				<lob />
+			</basic>
+			<basic name="thumbMediaId">
+				<column name="C_THUMB_MEDIA_ID" />
+			</basic>
+			<basic name="thumbMediaType">
+				<column name="C_THUMB_MEDIA_TYPE" />
+			</basic>
+			<basic name="thumbMediaContent" fetch="LAZY">
+				<column name="C_THUMB_MEDIA_CONTENT" />
+				<lob />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinLocationMessageEntity">
+		<table name="NG_TBL_WEIXIN_MESSAGE_LOCATION" />
+
+		<discriminator-value>6</discriminator-value>
+
+		<attributes>
+			<basic name="locationX">
+				<column name="C_LOCATION_X" />
+			</basic>
+			<basic name="locationY">
+				<column name="C_LOCATION_Y" />
+			</basic>
+			<basic name="scale">
+				<column name="C_SCALE" />
+			</basic>
+			<basic name="label">
+				<column name="C_LABEL" />
+			</basic>
+		</attributes>
+	</entity>
+
+	<entity class="cc.waa.ng.weixin.entity.WeixinLinkMessageEntity">
+		<table name="NG_TBL_WEIXIN_MESSAGE_LINK" />
+
+		<discriminator-value>7</discriminator-value>
+
+		<attributes>
+			<basic name="title">
+				<column name="C_TITLE" />
+			</basic>
+			<basic name="description">
+				<column name="C_DESCRIPTION" />
+			</basic>
+			<basic name="url">
+				<column name="C_URL" />
+			</basic>
+		</attributes>
+	</entity>
+
+</entity-mappings>
