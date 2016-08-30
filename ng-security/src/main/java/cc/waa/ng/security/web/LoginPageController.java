@@ -170,7 +170,7 @@ public class LoginPageController
 									  HttpServletResponse response)
 		throws Exception
 	{
-		return new ModelAndView("login", buildModel(request));
+		return new ModelAndView("security/login", buildModel(request));
 	}
 
 }

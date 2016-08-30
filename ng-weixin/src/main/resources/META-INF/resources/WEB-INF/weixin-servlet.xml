@@ -17,4 +17,6 @@
 		<beans:property name="useDefaultSuffixPattern" value="false" />
 	</beans:bean>
 
+	<beans:import resource="applicationContext-theme.xml" />
+
 </beans:beans>

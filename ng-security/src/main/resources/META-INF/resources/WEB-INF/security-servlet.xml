@@ -19,9 +19,6 @@
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<beans:property name="prefix" value="/WEB-INF/page/security/" />
-		<beans:property name="suffix" value=".jsp" />
-	</beans:bean>
+	<beans:import resource="applicationContext-theme.xml" />
 
 </beans:beans>

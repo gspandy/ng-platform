@@ -172,6 +172,7 @@
 		<module>ng-security</module>
 		<module>ng-weixin</module>
 		<module>ng-demo-web</module>
+		<module>ng-thm-material</module>
 	</modules>
 
 	<build>
