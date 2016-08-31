@@ -52,8 +52,6 @@
 		</beans:property>
 		<beans:property name="jpaProperties">
 			<beans:props>
-				<beans:prop key="eclipselink.logging.level.sql">FINE</beans:prop>
-				<beans:prop key="eclipselink.cache.shared.default">false</beans:prop>
 				<beans:prop key="ng.id.user.system">${ng.id.user.system}</beans:prop>
 			</beans:props>
 		</beans:property>
