@@ -10,10 +10,12 @@
 
 	<beans:bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<beans:property name="templateLoaderPaths" value="/WEB-INF/page/" />
+		<beans:property name="defaultEncoding" value="UTF-8" />
 	</beans:bean>
 
 	<beans:bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
 		<beans:property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView" />
+		<beans:property name="contentType" value="text/html; charset=UTF-8" />
 		<beans:property name="suffix" value=".ftl" />
 	</beans:bean>
 
